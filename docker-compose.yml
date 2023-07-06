@@ -1,0 +1,16 @@
+services:
+  localstack:
+    container_name: localstack
+    environment:
+      - DEBUG=1
+      - LOCALSTACK_HOSTNAME=localhost
+      - TEST_AWS_ACCOUNT_ID=000000000000
+      - KINESIS_ERROR_PROBABILITY=0.0
+      - KINESIS_INITIALIZE_STREAMS=consumer
+    image: localstack/localstack:latest
+    ports:
+      - "4566:4566"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      
+
