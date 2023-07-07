@@ -6,8 +6,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.services.kinesis.producer.KinesisProducerConfiguration;
+
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
-import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.cloudwatch.CloudWatchAsyncClient;
@@ -21,6 +24,12 @@ public class LocalstackConfiguration {
 
     @Value("${spring.cloud.aws.region.static}")
     private  String region;
+
+    @Value("${spring.cloud.aws.region.static}")
+    private  String accessKey;
+    
+    @Value("${spring.cloud.aws.region.static}")
+    private  String secretKey;
 
     @Bean
     public DynamoDbAsyncClient dynamoDbAsyncClient() {
@@ -55,5 +64,23 @@ public class LocalstackConfiguration {
             .region(Region.of(region))
             .endpointOverride(URI.create(endpoint))
             .build();
+    }
+
+    @Bean
+    public KinesisProducerConfiguration kinesisProducerConfiguration() {
+        var kinesisProducerConfiguration = new KinesisProducerConfiguration();
+
+        kinesisProducerConfiguration.setCredentialsProvider(new AWSStaticCredentialsProvider(
+            new BasicAWSCredentials(accessKey, secretKey)
+        ));
+        kinesisProducerConfiguration.setRegion(region);
+        kinesisProducerConfiguration.setKinesisEndpoint("localhost");
+        kinesisProducerConfiguration.setKinesisPort(4566);
+        kinesisProducerConfiguration.setCloudwatchEndpoint("localhost");
+        kinesisProducerConfiguration.setCloudwatchPort(4566);
+        kinesisProducerConfiguration.setStsEndpoint("localhost");
+        kinesisProducerConfiguration.setStsPort(4566);
+
+        return kinesisProducerConfiguration;
     }
 }

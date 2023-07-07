@@ -1,11 +1,10 @@
 spring:
-  main.allow-bean-definition-overriding: true
   cloud:
     stream:
       # default:
       #   error-handler-definition: errorHandler
       function:
-        definition: consumer;      
+        definition: consumer
       bindings:
         consumer-in-0:
           destination: consumer
@@ -23,12 +22,11 @@ spring:
           kpl-kcl-enabled: true
           enable-observation: true
           checkpoint:
-          #   #Set up so the AWS KCL can use dynamodb to manage multiple consumers ... so we dont have to :)
             table: checkpoint-table
           locks:
             table: locks-table
-          # auto-add-shards: true
-          # min-shard-count: 16
+          headers:
+            - test
     aws:
       stack.auto: false
       region:

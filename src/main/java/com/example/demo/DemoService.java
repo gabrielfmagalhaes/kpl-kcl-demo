@@ -1,9 +1,7 @@
 package com.example.demo;
 
 import java.util.Collections;
-import java.util.Map;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.function.StreamBridge;
@@ -13,25 +11,24 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.messaging.support.GenericMessage;
-
-import reactor.core.publisher.Flux;
 
 @Configuration
 public class DemoService {
     
+    @Autowired
+    private StreamBridge streamBridge;
+
     @Bean
-    public Consumer<Map<String, Object>> consumer() {
+    public Consumer<Message<String>> consumer() {
         return message -> {
-            System.out.println("Message: " + message);
+            System.out.println("Message: " + message.getPayload());
         };
     }
 
-	int messageId = 0;
+    @Scheduled(fixedDelay = 10000L)
+    public void supplier() {
+        streamBridge.send("producer-out-0",
+            MessageBuilder.createMessage("hello", new MessageHeaders(Collections.singletonMap("test", "hi"))));
+    }
 
-    @Bean
-	public Supplier<Flux<Message<String>>> producer() {
-		return () -> Flux.just("test")
-            .map(GenericMessage::new);
-	}
 }
