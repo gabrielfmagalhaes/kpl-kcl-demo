@@ -25,10 +25,10 @@ public class LocalstackConfiguration {
     @Value("${spring.cloud.aws.region.static}")
     private  String region;
 
-    @Value("${spring.cloud.aws.region.static}")
+    @Value("${spring.cloud.aws.region.credentials.access-key}")
     private  String accessKey;
     
-    @Value("${spring.cloud.aws.region.static}")
+    @Value("${spring.cloud.aws.region.credentials.secret-key}")
     private  String secretKey;
 
     @Bean
@@ -36,7 +36,7 @@ public class LocalstackConfiguration {
         return DynamoDbAsyncClient.builder()
             .credentialsProvider(StaticCredentialsProvider.create(
                 AwsBasicCredentials.create(
-                    "foo", "bar"
+                    accessKey, secretKey
                 )
             ))
             .region(Region.of(region))
@@ -48,7 +48,7 @@ public class LocalstackConfiguration {
     public KinesisAsyncClient kinesisAsyncClient() {
         return KinesisAsyncClient.builder()
             .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create(
-                "foo", "bar"
+                    accessKey, secretKey
             )))
             .region(Region.of(region))
             .endpointOverride(URI.create(endpoint))
@@ -59,7 +59,7 @@ public class LocalstackConfiguration {
     public CloudWatchAsyncClient cloudWatchAsyncClient() {
         return CloudWatchAsyncClient.builder()
             .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create(
-                "foo", "bar"
+                    accessKey, secretKey
             )))
             .region(Region.of(region))
             .endpointOverride(URI.create(endpoint))
