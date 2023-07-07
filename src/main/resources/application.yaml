@@ -1,0 +1,42 @@
+spring:
+  main.allow-bean-definition-overriding: true
+  cloud:
+    stream:
+      # default:
+      #   error-handler-definition: errorHandler
+      function:
+        definition: consumer;      
+      bindings:
+        consumer-in-0:
+          destination: consumer
+          group: observation-group
+          content-type: application/json
+          binder: kinesis
+        producer-out-0:
+          destination: consumer
+          group: observation-group
+          content-type: application/json
+          binder: kinesis
+      kinesis:
+        binder:
+          auto-create-stream: false
+          kpl-kcl-enabled: true
+          enable-observation: true
+          checkpoint:
+          #   #Set up so the AWS KCL can use dynamodb to manage multiple consumers ... so we dont have to :)
+            table: checkpoint-table
+          locks:
+            table: locks-table
+          # auto-add-shards: true
+          # min-shard-count: 16
+    aws:
+      stack.auto: false
+      region:
+        static: us-east-1
+      credentials:
+        access-key: foo
+        secret-key: bar
+
+logging.level:
+  com.amazonaws.util.EC2MetadataUtils: error
+  com.amazonaws.internal.InstanceMetadataServiceResourceFetcher: error
