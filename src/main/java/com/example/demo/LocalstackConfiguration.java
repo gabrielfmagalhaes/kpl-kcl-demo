@@ -28,7 +28,7 @@ public class LocalstackConfiguration {
     @Value("${spring.cloud.aws.credentials.access-key}")
     private  String accessKey;
     
-    @Value("${spring.cloud.aws..credentials.secret-key}")
+    @Value("${spring.cloud.aws.credentials.secret-key}")
     private  String secretKey;
 
     @Bean
@@ -80,6 +80,7 @@ public class LocalstackConfiguration {
         kinesisProducerConfiguration.setCloudwatchPort(4566);
         kinesisProducerConfiguration.setStsEndpoint("localhost");
         kinesisProducerConfiguration.setStsPort(4566);
+        kinesisProducerConfiguration.setVerifyCertificate(false);
 
         return kinesisProducerConfiguration;
     }

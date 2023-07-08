@@ -1,30 +1,27 @@
 spring:
   cloud:
+    function:
+      definition: producer;consumer
     stream:
-      # default:
-      #   error-handler-definition: errorHandler
-      function:
-        definition: consumer
+      default:
+        error-handler-definition: errorHandler
       bindings:
+        error:
+          destination: errorHandler
         consumer-in-0:
-          destination: consumer
+          destination: demo-consumer
           group: observation-group
           content-type: application/json
           binder: kinesis
         producer-out-0:
-          destination: consumer
+          destination: demo-consumer
           group: observation-group
           content-type: application/json
           binder: kinesis
       kinesis:
         binder:
-          auto-create-stream: false
           kpl-kcl-enabled: true
           enable-observation: true
-          checkpoint:
-            table: checkpoint-table
-          locks:
-            table: locks-table
           headers:
             - test
     aws:

@@ -3,14 +3,16 @@ services:
     container_name: localstack
     environment:
       - DEBUG=1
-      - LOCALSTACK_HOSTNAME=localhost
-      - TEST_AWS_ACCOUNT_ID=000000000000
-      - KINESIS_ERROR_PROBABILITY=0.0
-      - KINESIS_INITIALIZE_STREAMS=consumer
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - AWS_ACCESS_KEY_ID=foo
+      - AWS_SECRET_ACCESS_KEY=bar
+      - AWS_DEFAULT_REGION=us-east-1
+      - LOCALSTACK_HOST=localhost
+      - KINESIS_INITIALIZE_STREAMS=demo-consumer:1
     image: localstack/localstack:latest
     ports:
       - "4566:4566"
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      - "/var/run/docker.sock:/var/run/docker.sock"
       
 
