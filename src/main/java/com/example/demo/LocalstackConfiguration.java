@@ -25,10 +25,10 @@ public class LocalstackConfiguration {
     @Value("${spring.cloud.aws.region.static}")
     private  String region;
 
-    @Value("${spring.cloud.aws.region.credentials.access-key}")
+    @Value("${spring.cloud.aws.credentials.access-key}")
     private  String accessKey;
     
-    @Value("${spring.cloud.aws.region.credentials.secret-key}")
+    @Value("${spring.cloud.aws..credentials.secret-key}")
     private  String secretKey;
 
     @Bean
