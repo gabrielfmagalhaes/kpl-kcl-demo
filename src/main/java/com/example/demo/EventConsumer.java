@@ -1,5 +1,9 @@
 package com.example.demo;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.cloud.stream.binding.BindingsLifecycleController;
+import org.springframework.cloud.stream.endpoint.BindingsEndpoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.ErrorMessage;
@@ -10,6 +14,9 @@ import java.util.function.Consumer;
 @Component
 public class EventConsumer {
 
+    @Autowired
+    BindingsEndpoint endpoint;
+
     @Bean
     public Consumer<Message<String>> consumer() {
         return message -> {
@@ -18,8 +25,10 @@ public class EventConsumer {
         };
     }
 
-    @Bean
-    public Consumer<ErrorMessage> errorHandler() {
-        return v -> System.out.println("Can't process message: " + v.getOriginalMessage());
-    }
+//    @Bean
+//    public ApplicationRunner runner() {
+//        return args -> {
+//            endpoint.changeState("consumer-in-0", BindingsLifecycleController.State.STARTED);
+//        };
+//    }
 }

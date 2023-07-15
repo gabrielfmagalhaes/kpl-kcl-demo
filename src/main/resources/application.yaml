@@ -1,19 +1,22 @@
+management.endpoints.web.exposure.include: bindings
+
 spring:
   cloud:
-    function:
-      definition: producer;consumer
+#    function:
+#      definition: consumer
     stream:
-      default:
-        error-handler-definition: errorHandler
+#      default:
+#        error-handler-definition: errorHandler
       bindings:
-        error:
-          destination: errorHandler
+#        error:
+#          destination: errorHandler
         consumer-in-0:
           destination: demo-consumer
           group: observation-group
           content-type: application/json
           binder: kinesis
-        producer-out-0:
+          consumer.auto-startup: false
+        test-producer-out-0:
           destination: demo-consumer
           group: observation-group
           content-type: application/json
@@ -21,7 +24,7 @@ spring:
       kinesis:
         binder:
           kpl-kcl-enabled: true
-          enable-observation: true
+          enable-observation: false
           headers:
             - test
     aws:
