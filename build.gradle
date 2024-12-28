@@ -1,14 +1,16 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '3.1.1'
-	id 'io.spring.dependency-management' version '1.1.0'
+	id 'org.springframework.boot' version '3.4.1'
+	id 'io.spring.dependency-management' version '1.1.7'
 }
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	sourceCompatibility = '17'
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
 }
 
 repositories {
@@ -16,9 +18,9 @@ repositories {
 }
 
 ext {
-	awsSdkVersion1 = '1.12.502'
-	awsSdkVersion2 = '2.20.99'
-	springCloudVersion = '2022.0.3'
+	awsSdkVersion1 = '1.12.780'
+	awsSdkVersion2 = '2.29.41'
+	springCloudVersion = '2024.0.0'
 }
 
 dependencyManagement {
@@ -29,12 +31,20 @@ dependencyManagement {
 	}
 }
 
+configurations.all {
+	exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-log4j2'
 	implementation 'org.springframework.cloud:spring-cloud-stream'
-	implementation 'org.springframework.cloud:spring-cloud-stream-binder-kinesis:4.0.0'
-	implementation 'io.micrometer:micrometer-tracing'
+	implementation 'org.springframework.cloud:spring-cloud-stream-binder-kinesis:4.0.4'
+	implementation 'io.micrometer:micrometer-tracing-bridge-otel'
+	implementation 'io.opentelemetry:opentelemetry-exporter-otlp'
+	implementation 'io.micrometer:micrometer-registry-otlp'
+	implementation 'org.apache.logging.log4j:log4j-layout-template-json:2.24.3'
 
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'

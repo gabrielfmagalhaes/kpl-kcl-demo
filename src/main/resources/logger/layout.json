@@ -1,0 +1,64 @@
+{
+    "Timestamp": {
+        "$resolver": "timestamp",
+        "pattern": {
+            "format": "yyyy-MM-dd HH:mm:ss.SSS",
+            "timezone": "BET",
+            "locale": "pt_BR"
+        }
+    },
+    "Severity": {
+        "$resolver": "level",
+        "field": "name"
+    },
+    "Attributes": {
+        "LineNumber": {
+            "$resolver": "source",
+            "field": "lineNumber"
+        },
+        "Class": {
+            "$resolver": "source",
+            "field": "className"
+        },
+        "ThreadName": {
+            "$resolver": "thread",
+            "field": "name"
+        },
+        "Method": {
+            "$resolver": "source",
+            "field": "methodName"
+        },
+        "LoggerName": {
+            "$resolver": "logger",
+            "field": "name"
+        },
+        "exception.type": {
+            "$resolver": "exception",
+            "field": "className"
+        },
+        "exception.stacktrace": {
+            "$resolver": "exception",
+            "field": "stackTrace",
+            "stackTrace": {
+                "stringified": true
+            }
+        },
+        "ExtraAttributes": {
+            "$resolver": "map",
+            "pattern": "^((?!Resource).)*$",
+            "flatten": true
+        }
+    },
+    "Resource": {
+        "$resolver": "map",
+        "pattern": "Resource"
+    },
+    "mdc": {
+        "$resolver": "mdc"
+    },
+    "Body": {
+        "$resolver": "message",
+        "stringified": true,
+        "includeStackTrace": false
+    }
+}

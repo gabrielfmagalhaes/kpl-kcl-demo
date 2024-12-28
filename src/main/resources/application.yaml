@@ -1,37 +1,62 @@
 spring:
+  application:
+    name: kpl-kcl-demo
   cloud:
     function:
-      definition: producer;consumer
+      definition: consumer
     stream:
-      default:
-        error-handler-definition: errorHandler
       bindings:
         error:
           destination: errorHandler
+          error-handler-definition: errorHandler
         consumer-in-0:
           destination: demo-consumer
           group: observation-group
-          content-type: application/json
           binder: kinesis
         producer-out-0:
           destination: demo-consumer
           group: observation-group
-          content-type: application/json
           binder: kinesis
       kinesis:
         binder:
           kpl-kcl-enabled: true
           enable-observation: true
           headers:
-            - test
+            - spanId
+            - traceId
     aws:
-      stack.auto: false
       region:
         static: us-east-1
       credentials:
         access-key: foo
         secret-key: bar
 
+management:
+  metrics:
+    tags:
+      application: ${spring.application.name}
+  endpoint:
+    health:
+      access: unrestricted
+  endpoints:
+    web:
+      base-path: /
+      exposure:
+        include:
+          - health
+          - info
+  tracing:
+    enabled: true
+    baggage:
+      correlation:
+        fields:
+          - x-cid
+          - x-tenant
+      remote-fields:
+        - x-cid
+        - x-tenant
+    sampling:
+      probability: 1.0
+
 logging.level:
-  com.amazonaws.util.EC2MetadataUtils: error
-  com.amazonaws.internal.InstanceMetadataServiceResourceFetcher: error
+  "[com.amazonaws.util.EC2MetadataUtils, com.amazonaws.internal.InstanceMetadataServiceResourceFetcher]": error

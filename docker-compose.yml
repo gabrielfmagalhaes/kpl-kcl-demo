@@ -1,18 +1,36 @@
 services:
   localstack:
-    container_name: localstack
+    image: localstack/localstack:3.8.1
     environment:
-      - DEBUG=1
-      - DOCKER_HOST=unix:///var/run/docker.sock
-      - AWS_ACCESS_KEY_ID=foo
-      - AWS_SECRET_ACCESS_KEY=bar
+      - SERVICES=kinesis,dynamodb,cloudwatch,sts
       - AWS_DEFAULT_REGION=us-east-1
+      - DOCKER_HOST=unix:///var/run/docker.sock
       - LOCALSTACK_HOST=localhost
-      - KINESIS_INITIALIZE_STREAMS=demo-consumer:1
-    image: localstack/localstack:latest
+      - DEBUG=0
     ports:
-      - "4566:4566"
+      - 4566:4566
     volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock"
-      
+      - ./scripts/localstack:/etc/localstack/init/ready.d
+      - ./scripts/localstack:/tmp/data
+      - /var/run/docker.sock:/var/run/docker.sock
+  
+  zipkin-all-in-one:
+    image: openzipkin/zipkin:3.0.1
+    ports:
+      - 9411:9411
+  
+  prometheus:
+    image: prom/prometheus:v2.45.3
+    volumes:
+      - ./scripts/prometheus/prometheus.yaml:/etc/prometheus/prometheus.yml:Z
 
+  otel-collector:
+    image: otel/opentelemetry-collector:0.93.0
+    command: [ "--config=/etc/otel-collector-config.yaml" ]
+    volumes:
+      - ./scripts/opentelemetry/otel-collector-config.yaml:/etc/otel-collector-config.yaml:Z
+    ports:
+      - 4317:4317
+      - 4318:4318
+      - 8887:8887
+      - 8889:8889
